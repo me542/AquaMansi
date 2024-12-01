@@ -6,28 +6,38 @@ class appbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Removes the debug banner
       home: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(120.0), // Custom height for AppBar
           child: ClipRRect(
             borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(30), // Rounded corner for the bottom left
-              bottomRight: Radius.circular(30), // Rounded corner for the bottom right
+              bottomLeft: Radius.circular(20), // Rounded corner for the bottom left
+              bottomRight: Radius.circular(20), // Rounded corner for the bottom right
             ),
             child: AppBar(
-              title: const Text('Aquamansi'), // Title of the AppBar
-              centerTitle: true, // Centers the title
-              backgroundColor: Color(0xFF4CECAE), // AppBar background color
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.menu), // Menu icon on the right
-                  onPressed: () {
-                    // Action when the menu icon is pressed
-                    print('Menu pressed');
-                  },
+            backgroundColor: const Color(0xFF4CECAE), // AppBar background color
+            flexibleSpace: const Column(
+              mainAxisAlignment: MainAxisAlignment.end, // Align content at the bottom
+              children: [
+                Text(
+                  'AquaMansi',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromRGBO(0, 131, 20, 1),
+                  ),
                 ),
               ],
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.menu), // Menu icon on the right
+                onPressed: () {
+                  print('Menu pressed');
+                },
+              ),
+            ],
+          
             ),
           ),
         ),

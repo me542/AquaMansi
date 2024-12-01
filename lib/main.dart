@@ -1,5 +1,7 @@
-import 'package:aquamansi_frontend/widget/appbar.dart'; // kelangan iimport yung location ng file
+//import 'package:aquamansi_frontend/widget/appbar.dart'; // kelangan iimport yung location ng file
+import 'package:aquamansi_frontend/widget/appbar.dart';
 import 'package:flutter/material.dart';
+import 'package:aquamansi_frontend/screen/menuoption.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -11,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, 
       title: 'MyApp',
       theme: ThemeData(
         // This is the theme of your application.
@@ -31,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const appbar ( ), // ilagay mo yung name ng class
+      home: const menu ( ), // ilagay mo yung name ng class
     );
   }
 }
