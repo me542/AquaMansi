@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const menu ( ), // ilagay mo yung name ng class
+      home: const appbar ( ), // ilagay mo yung name ng class
     );
   }
 }

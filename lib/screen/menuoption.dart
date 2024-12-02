@@ -1,39 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class menu extends StatefulWidget {
-  const menu ({Key? key}) : super(key: key);
+class Menu extends StatefulWidget {
+  const Menu({Key? key}) : super(key: key);
 
   @override
-  State<menu> createState() => _menuState();
+  State<Menu> createState() => _MenuState();
 }
-class _menuState extends State<menu> {
+
+class _MenuState extends State<Menu> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, 
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(120.0), // Custom height for AppBar
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(20), // Rounded corner for the bottom left
-              bottomRight: Radius.circular(20), // Rounded corner for the bottom right
+          preferredSize: const Size.fromHeight(110.0), // Custom height for AppBar
+          child: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: const SystemUiOverlayStyle(
+              statusBarColor: Color(0xFF4CECAE), // Status bar color
+              statusBarIconBrightness: Brightness.dark, // Dark icons
+              statusBarBrightness: Brightness.light, // For iOS
             ),
-            child: AppBar(
-              backgroundColor: const Color(0xFF4CECAE),
-              flexibleSpace: const Column(
-              mainAxisAlignment: MainAxisAlignment.end, // Align content at the bottom
-              children: [
-                Text(
-                  'AquaMansi',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(0, 131, 20, 1),
+            child: SafeArea(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(20), // Rounded corner for the bottom left
+                  bottomRight: Radius.circular(20), // Rounded corner for the bottom right
+                ),
+                child: AppBar(
+                  backgroundColor: const Color(0xFF4CECAE),
+                  flexibleSpace: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                    children: [
+                      Image.asset(
+                        'lib/asset/logo1.png', // Replace with your image asset path
+                        height: 100, // Adjust the height to fit
+                        fit: BoxFit.contain, // Ensure the image scales appropriately
+                      ),
+                    ],
                   ),
                 ),
-              ],
-             ), // AppBar background color
+              ),
             ),
           ),
         ),
@@ -55,8 +63,11 @@ class _menuState extends State<menu> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15), // Custom button shape
                     ),
+                    shadowColor: Colors.black.withOpacity(0.5), // Shadow color
+                    elevation: 8, // Elevation for shadow effect
                   ),
-                  child: const Text('Data'),
+                  child: const Text('Data',
+                  style: TextStyle(fontSize: 20),),
                 ),
               ),
               const SizedBox(height: 20), // Space between buttons
@@ -75,8 +86,12 @@ class _menuState extends State<menu> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15), // Custom button shape
                     ),
+                    shadowColor: Colors.black.withOpacity(0.5), // Shadow color
+                    elevation: 8, // Elevation for shadow effect
                   ),
-                  child: const Text('Manual Use'),
+                  child: const Text('User Manual',
+                  style: TextStyle(fontSize: 20.0)
+                  ),
                 ),
               ),
               const SizedBox(height: 20), // Space between buttons
@@ -95,8 +110,11 @@ class _menuState extends State<menu> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15), // Custom button shape
                     ),
+                    shadowColor: Colors.black.withOpacity(0.5), // Shadow color
+                    elevation: 8, // Elevation for shadow effect
                   ),
-                  child: const Text('About'),
+                  child: const Text('About',
+                  style: TextStyle(fontSize: 20),),
                 ),
               ),
             ],
