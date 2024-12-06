@@ -10,9 +10,9 @@ import '../screen/usermanual.dart';
 Map<String, WidgetBuilder> defineroutes() {
   return {
     '/': (context) => InitialScreen(),
+    '/Appbar': (context) => AppBar(),
     '/manual': (context) => UserManual(),
     '/1': (context) => Menu(),
-    '/Appbar': (context) => AppBar(),
-
+    
   };
 }
