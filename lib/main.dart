@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Remove debug banner
+      debugShowCheckedModeBanner: false, // Disable debug banner globally
       title: 'AquaMansi',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -19,8 +19,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-
-
-

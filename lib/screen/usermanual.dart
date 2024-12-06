@@ -38,7 +38,7 @@ class UserManual extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/1'); // Navigate to next screen
+                    Navigator.pushNamed(context, '/Home'); // Navigate to next screen
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: Colors.greenAccent, // Button color

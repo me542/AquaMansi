@@ -2,6 +2,8 @@ import 'package:aquamansi_frontend/screen/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'homescreen.dart';
+
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
 
@@ -31,12 +33,19 @@ class _MenuState extends State<Menu> {
                 ),
                 child: AppBar(
                   backgroundColor: const Color(0xFF4CECAE),
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white), // White arrow
+                    iconSize: 40.0, // Custom size for the back arrow
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Go back to the previous screen
+                    },
+                  ),
                   flexibleSpace: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                     children: [
                       Image.asset(
                         'lib/asset/logo1.png', // Replace with your image asset path
-                        height: 100, // Adjust the height to fit
+                        height: 80, // Adjust the height to fit
                         fit: BoxFit.contain, // Ensure the image scales appropriately
                       ),
                     ],
