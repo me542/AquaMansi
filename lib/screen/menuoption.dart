@@ -1,3 +1,4 @@
+import 'package:aquamansi_frontend/screen/data.dart'; // Import the file that contains DataScreen
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -55,7 +56,11 @@ class _MenuState extends State<Menu> {
                 height: 70, // Custom height
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add your Data button action here
+                    // Navigate to DataScreen when button is pressed
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Data()),
+                    );
                     print("Data button pressed");
                   },
                   style: ElevatedButton.styleFrom(
@@ -67,7 +72,8 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('Data',
-                  style: TextStyle(fontSize: 20),),
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
               const SizedBox(height: 20), // Space between buttons
@@ -90,7 +96,7 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('User Manual',
-                  style: TextStyle(fontSize: 20.0)
+                      style: TextStyle(fontSize: 20.0)
                   ),
                 ),
               ),
@@ -114,7 +120,8 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('About',
-                  style: TextStyle(fontSize: 20),),
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
             ],
