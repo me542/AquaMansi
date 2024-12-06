@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Remove debug banner
-      title: 'Fair Room',
+      title: 'AquaMansi',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

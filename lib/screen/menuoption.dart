@@ -1,4 +1,4 @@
-import 'package:aquamansi_frontend/screen/data.dart'; // Import the file that contains DataScreen
+import 'package:aquamansi_frontend/screen/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -72,8 +72,7 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('Data',
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  style: TextStyle(fontSize: 20),),
                 ),
               ),
               const SizedBox(height: 20), // Space between buttons
@@ -85,7 +84,35 @@ class _MenuState extends State<Menu> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Add your Manual Use button action here
-                    print("Manual Use button pressed");
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                         title : const Center(
+                         child: Text("User Manual"),
+                         ),
+                         content: const SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('This app is for calamansi farmers. Here is a detailed user manual that guides you through the functionalities of this app. Follow these instructions carefully:\n\n'
+                                    '1. Open the app and navigate through the main menu.\n'
+                                    '2. Use the "Data" button to input or view data related to your farm.\n'
+                                    '3. The "User Manual" button provides guidance on app usage.\n'
+                                    '4. The "About" button provides information about this app.\n\n'
+                                    'For further assistance, contact support.')
+                            ],
+                          ),
+                         ),
+                          actions: [
+                          TextButton(onPressed: () {
+                            Navigator.of(context).pop();
+                            }, child: const Text('close'))
+                          ],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          )
+                        );
+                      }
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: const Color(0xFF4CECAE), // Custom text color
@@ -96,7 +123,7 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('User Manual',
-                      style: TextStyle(fontSize: 20.0)
+                  style: TextStyle(fontSize: 20.0)
                   ),
                 ),
               ),
@@ -109,7 +136,33 @@ class _MenuState extends State<Menu> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Add your About button action here
-                    print("About button pressed");
+                    showDialog(context: context, builder: (BuildContext context){
+                      return AlertDialog(
+                         title : const Center(
+                         child: Text("About AquaMansi"),
+                         ),
+                         content: const SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                    'This app is specially designed to help calamansi farmers manage their farms more efficiently. It offers various features such as:\n\n'
+                                    '1. Data Management: Keep track of your farming data, including harvest records, expenses, and yields.\n\n'           
+                                    '2. User Manual: Get detailed instructions on how to use the app and maximize its features.\n')
+                            ],
+                          ),
+                         ),
+                          actions: [
+                          TextButton(onPressed: () {
+                            Navigator.of(context).pop();
+                            }, child: const Text('close'))
+                          ],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          )
+                        );
+                      }
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white, backgroundColor: const Color(0xFF4CECAE), // Custom text color
@@ -120,7 +173,8 @@ class _MenuState extends State<Menu> {
                     elevation: 8, // Elevation for shadow effect
                   ),
                   child: const Text('About',
-                    style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20),
+
                   ),
                 ),
               ),
