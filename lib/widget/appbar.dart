@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 class Appbar extends StatelessWidget {
   const Appbar({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,7 +29,7 @@ class Appbar extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                     children: [
                       Image.asset(
-                        'lib/asset/logo1.png', // Replace with your image asset path
+                        'asset/logo1.png', // Replace with your image asset path
                         height: 80, // Adjust the height to fit
                         fit: BoxFit.contain, // Ensure the image scales appropriately
                       ),

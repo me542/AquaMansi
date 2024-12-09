@@ -41,6 +41,40 @@ class _SetupState extends State<Setup> {
     });
   }
 
+  // Function to show the tree stage options for a sensor
+  void showTreeStageOptions(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Stage for ${sensors[index]}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              ListTile(
+                title: Text('Young'),
+              ),
+              ListTile(
+                title: Text('Juvenile'),
+              ),
+              ListTile(
+                title: Text('Mature'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,38 +120,41 @@ class _SetupState extends State<Setup> {
                             spacing: 8.0, // Horizontal spacing
                             runSpacing: 8.0, // Vertical spacing
                             children: List.generate(sensors.length, (index) {
-                              return Container(
-                                width: itemWidth,
-                                height: itemHeight,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                alignment: Alignment.center,
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Positioned(
-                                      top: 0,
-                                      right: -12,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                        ),
-                                        onPressed: () => deleteSensor(index),
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        sensors[index],
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                              return GestureDetector(
+                                onTap: () => showTreeStageOptions(index), // Show options on tap
+                                child: Container(
+                                  width: itemWidth,
+                                  height: itemHeight,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Stack(
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Positioned(
+                                        top: 0,
+                                        right: -12,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.black,
+                                          ),
+                                          onPressed: () => deleteSensor(index),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Center(
+                                        child: Text(
+                                          sensors[index],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             }),

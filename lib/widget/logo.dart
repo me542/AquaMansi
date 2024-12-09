@@ -9,8 +9,8 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'lib/asset/logo1.png', // Corrected the path to match your assets folder
+    return
+      Image.asset('asset/logo1.png', // Corrected the path to match your assets folder
       width: width,
       height: height,
     );

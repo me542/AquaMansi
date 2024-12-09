@@ -37,7 +37,7 @@ class Data extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                     children: [
                       Image.asset(
-                        'lib/asset/logo1.png', // Replace with your image asset path
+                        'asset/logo1.png', // Replace with your image asset path
                         height: 80, // Adjust the height to fit
                         fit: BoxFit.contain, // Ensure the image scales appropriately
                       ),

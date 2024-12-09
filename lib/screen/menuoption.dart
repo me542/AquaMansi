@@ -2,6 +2,8 @@ import 'package:aquamansi_frontend/screen/data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../widget/a.dart';
+import '../widget/setup.dart';
 import 'homescreen.dart';
 
 class Menu extends StatefulWidget {
@@ -44,7 +46,7 @@ class _MenuState extends State<Menu> {
                     mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                     children: [
                       Image.asset(
-                        'lib/asset/logo1.png', // Replace with your image asset path
+                        'asset/logo1.png', // Replace with your image asset path
                         height: 80, // Adjust the height to fit
                         fit: BoxFit.contain, // Ensure the image scales appropriately
                       ),
@@ -156,7 +158,7 @@ class _MenuState extends State<Menu> {
                             children: [
                               Text(
                                     'This app is specially designed to help calamansi farmers manage their farms more efficiently. It offers various features such as:\n\n'
-                                    '1. Data Management: Keep track of your farming data, including harvest records, expenses, and yields.\n\n'           
+                                    '1. Data Management: Keep track of your farming data, including harvest records, expenses, and yields.\n\n'
                                     '2. User Manual: Get detailed instructions on how to use the app and maximize its features.\n')
                             ],
                           ),

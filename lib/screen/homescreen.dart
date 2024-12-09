@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:aquamansi_frontend/widget/indicator.dart';
 import 'package:flutter/services.dart';
+import 'menuoption.dart';
+import 'package:aquamansi_frontend/widget/processcard.dart';
+import 'package:aquamansi_frontend/widget/sensorsetup.dart';  // Import the sensor setup widget
 
-import 'menuoption.dart'; // Make sure this file contains the 'Menu' class.
+void main() {
+  runApp(const Homescreen());
+}
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
@@ -30,8 +36,7 @@ class Homescreen extends StatelessWidget {
                   flexibleSpace: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                     children: [
-                      Image.asset(
-                        'lib/asset/logo1.png', // Replace with your image asset path
+                      Image.asset('asset/logo1.png', // Replace with your image asset path
                         height: 80, // Adjust the height to fit
                         fit: BoxFit.contain, // Ensure the image scales appropriately
                       ),
@@ -46,7 +51,6 @@ class Homescreen extends StatelessWidget {
                             icon: const Icon(Icons.menu, color: Colors.white), // Menu icon
                             iconSize: 45, // Custom size for the menu icon
                             onPressed: () {
-                              // Fixed the Navigator.push() call
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -64,11 +68,53 @@ class Homescreen extends StatelessWidget {
             ),
           ),
         ),
+        body: SingleChildScrollView(  // Make the body scrollable
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start, // Align content from the top
+              crossAxisAlignment: CrossAxisAlignment.center, // Center the widgets horizontally
+              children: [
+                // Circle Loading Indicator as a separate widget
+                CircleLoadingIndicator(), // Now it's used here
+
+                const SizedBox(height: 16), // Add spacing between widgets
+
+                // ProgressCard for "Young" stage with its specific image
+                ProgressCard(
+                  percentage: 100,
+                  stage: 'Young',
+                  count: 3,
+                  color: Colors.blue,
+                  imagePath: 'asset/young.png', // Replace with your image
+                ),
+                const SizedBox(height: 16),
+                // ProgressCard for "Juvenile" stage with its specific image
+                ProgressCard(
+                  percentage: 50,
+                  stage: 'Juvenile',
+                  count: 4,
+                  color: Colors.blue,
+                  imagePath: 'asset/juvenile.png', // Replace with your image
+                ),
+                const SizedBox(height: 16),
+                // ProgressCard for "Matured" stage with its specific image
+                ProgressCard(
+                  percentage: 20,
+                  stage: 'Matured',
+                  count: 3,
+                  color: Colors.blue,
+                  imagePath: 'asset/mature.png', // Replace with your image
+                ),
+
+                // Add the Sensor Setup widget here
+                const SizedBox(height: 16), // Optional spacing
+                const Setup(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(const Homescreen());
 }
