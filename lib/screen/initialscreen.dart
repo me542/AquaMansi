@@ -1,4 +1,3 @@
-import 'package:aquamansi_frontend/screen/menuoption.dart';
 import 'package:aquamansi_frontend/screen/usermanual.dart';
 import 'package:aquamansi_frontend/widget/logo.dart';
 import 'package:flutter/material.dart';

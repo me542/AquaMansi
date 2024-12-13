@@ -8,19 +8,34 @@ class Setup extends StatefulWidget {
 }
 
 class _SetupState extends State<Setup> {
-  int hours = 3; // Initial time in hours
-  List<String> sensors = List.generate(6, (index) => 'Sensor ${index + 1}'); // Initial sensors list
+  int hours = 0; // Initial time in hours for the first cycle
+  int hours2 = 0; // Initial count of execute
+  List<String> sensors = List.generate(0, (index) => 'Sensor ${index + 1}'); // Initial sensors list
 
   void incrementHours() {
     setState(() {
-      hours++; // Increase hours by 1
+      hours++; // Increase first cycle hours by 1
     });
   }
 
   void decrementHours() {
     setState(() {
       if (hours > 1) {
-        hours--; // Prevent hours from going below 1
+        hours--; // Prevent hours from going below 1 for the first cycle
+      }
+    });
+  }
+
+  void incrementHours2() {
+    setState(() {
+      hours2++; // Increase second cycle hours by 1
+    });
+  }
+
+  void decrementHours2() {
+    setState(() {
+      if (hours2 > 1) {
+        hours2--; // Prevent hours from going below 1 for the second cycle
       }
     });
   }
@@ -37,7 +52,6 @@ class _SetupState extends State<Setup> {
       sensors.add('Sensor $nextSensorNumber');
     });
   }
-
 
   // Function to delete a sensor
   void deleteSensor(int index) {
@@ -203,6 +217,7 @@ class _SetupState extends State<Setup> {
                 ),
               ),
               const SizedBox(height: 16),
+              // First time cycle
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -231,6 +246,49 @@ class _SetupState extends State<Setup> {
                   ),
                   IconButton(
                     onPressed: incrementHours,
+                    icon: const Icon(Icons.add),
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Second time cycle
+              const Text(
+                'Count Execute',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed: decrementHours2,
+                    icon: const Icon(Icons.remove),
+                    color: Colors.black,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.greenAccent,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '$hours2 x',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: incrementHours2,
                     icon: const Icon(Icons.add),
                     color: Colors.black,
                   ),

@@ -6,7 +6,7 @@ class CircleLoadingIndicator extends StatefulWidget {
 }
 
 class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
-  double progress = 50.0; // Example percentage
+  double progress = 0.0; // Example percentage
   bool isProcessComplete = false; // To track process state
 
   void handleButtonClick() {

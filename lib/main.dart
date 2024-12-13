@@ -9,13 +9,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Disable debug banner globally
+      debugShowCheckedModeBanner: false,
       title: 'AquaMansi',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.black), // Default text color
+        ),
       ),
-      initialRoute: '/', // Initial route
-      routes: defineroutes(), // Use the function to define routes
+      initialRoute: '/',
+      routes: defineroutes(),
     );
   }
 }

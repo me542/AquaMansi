@@ -1,4 +1,3 @@
-// progress_card.dart
 import 'package:flutter/material.dart';
 
 class ProgressCard extends StatelessWidget {
