@@ -35,7 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ? IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.pop(context); // Navigate back to the previous screen
+                Navigator.pop(context);  // This will pop the current screen (Data) and return to Menu
               },
             )
                 : Container(), // No back arrow

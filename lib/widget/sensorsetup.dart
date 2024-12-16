@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:aquamansi_frontend/widget/timecycle.dart';
+import 'package:aquamansi_frontend/widget/execute.dart';
 
 class Setup extends StatefulWidget {
-  const Setup({super.key});
+  final Function(String, {bool increment}) updateStageCount;
+
+  const Setup({super.key, required this.updateStageCount});
 
   @override
   _SetupState createState() => _SetupState();
@@ -10,7 +14,9 @@ class Setup extends StatefulWidget {
 class _SetupState extends State<Setup> {
   int hours = 0; // Initial time in hours for the first cycle
   int hours2 = 0; // Initial count of execute
-  List<String> sensors = List.generate(0, (index) => 'Sensor ${index + 1}'); // Initial sensors list
+  List<String> sensors = []; // Initial sensors list
+  Map<int, String> sensorStages = {}; // Map to track sensor stages (sensor index -> stage)
+  Map<int, String> sensorButtonNames = {}; // Map to track sensor button names
 
   void incrementHours() {
     setState(() {
@@ -40,27 +46,44 @@ class _SetupState extends State<Setup> {
     });
   }
 
-  // Function to add a new sensor
   void addSensor() {
     setState(() {
-      // Find the next available sensor number by looking for the highest number in the existing sensors list
-      int nextSensorNumber = sensors
-          .where((sensor) => sensor.startsWith('Sensor'))
-          .map((sensor) => int.parse(sensor.split(' ').last))
-          .fold(0, (prev, curr) => curr > prev ? curr : prev) + 1;
+      int nextSensorNumber = sensors.isEmpty
+          ? 1
+          : int.parse(sensors.last.split(' ').last) + 1;
 
       sensors.add('Sensor $nextSensorNumber');
+      sensorButtonNames[nextSensorNumber - 1] = '${nextSensorNumber} Tree'; // Updated button name
     });
   }
 
-  // Function to delete a sensor
   void deleteSensor(int index) {
+    String sensor = sensors[index];
+
+    if (sensorStages.containsKey(index)) {
+      if (sensorStages[index] == 'Young') {
+        widget.updateStageCount('Young', increment: false); // Decrease count for 'Young' stage
+      } else if (sensorStages[index] == 'Juvenile') {
+        widget.updateStageCount('Juvenile', increment: false); // Decrease count for 'Juvenile' stage
+      } else if (sensorStages[index] == 'Mature') {
+        widget.updateStageCount('Mature', increment: false); // Decrease count for 'Mature' stage
+      }
+    }
+
     setState(() {
       sensors.removeAt(index);
+      sensorStages.remove(index);
+      sensorButtonNames.remove(index);
+
+      sensorStages = {
+        for (var i = 0; i < sensors.length; i++) i: sensorStages[i + 1] ?? ''
+      };
+      sensorButtonNames = {
+        for (var i = 0; i < sensors.length; i++) i: sensorButtonNames[i + 1] ?? ''
+      };
     });
   }
 
-  // Function to show the tree stage options for a sensor
   void showTreeStageOptions(int index) {
     showDialog(
       context: context,
@@ -74,7 +97,16 @@ class _SetupState extends State<Setup> {
                 title: const Text('Young'),
                 onTap: () {
                   setState(() {
-                    sensors[index] = 'S${index + 1} Young'; // Update sensor name
+                    if (sensorStages[index] != 'Young') {
+                      if (sensorStages[index] == 'Juvenile') {
+                        widget.updateStageCount('Juvenile', increment: false);
+                      } else if (sensorStages[index] == 'Mature') {
+                        widget.updateStageCount('Mature', increment: false);
+                      }
+                      sensorStages[index] = 'Young';
+                      widget.updateStageCount('Young');
+                      sensorButtonNames[index] = '${index + 1}T Young';
+                    }
                   });
                   Navigator.of(context).pop();
                 },
@@ -83,7 +115,16 @@ class _SetupState extends State<Setup> {
                 title: const Text('Juvenile'),
                 onTap: () {
                   setState(() {
-                    sensors[index] = 'S${index + 1} Juvenile'; // Update sensor name
+                    if (sensorStages[index] != 'Juvenile') {
+                      if (sensorStages[index] == 'Young') {
+                        widget.updateStageCount('Young', increment: false);
+                      } else if (sensorStages[index] == 'Mature') {
+                        widget.updateStageCount('Mature', increment: false);
+                      }
+                      sensorStages[index] = 'Juvenile';
+                      widget.updateStageCount('Juvenile');
+                      sensorButtonNames[index] = '${index + 1}T Juvenile';
+                    }
                   });
                   Navigator.of(context).pop();
                 },
@@ -92,7 +133,16 @@ class _SetupState extends State<Setup> {
                 title: const Text('Mature'),
                 onTap: () {
                   setState(() {
-                    sensors[index] = 'S${index + 1} Mature'; // Update sensor name
+                    if (sensorStages[index] != 'Mature') {
+                      if (sensorStages[index] == 'Young') {
+                        widget.updateStageCount('Young', increment: false);
+                      } else if (sensorStages[index] == 'Juvenile') {
+                        widget.updateStageCount('Juvenile', increment: false);
+                      }
+                      sensorStages[index] = 'Mature';
+                      widget.updateStageCount('Mature');
+                      sensorButtonNames[index] = '${index + 1}T Mature';
+                    }
                   });
                   Navigator.of(context).pop();
                 },
@@ -120,15 +170,14 @@ class _SetupState extends State<Setup> {
         child: Container(
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Colors.lightBlueAccent.shade100, // Background color
-            borderRadius: BorderRadius.circular(20), // Rounded corners
+            color: Colors.lightBlueAccent.shade100,
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Title
               const Text(
-                'Set up Sensors',
+                'Set up Stages',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -136,24 +185,22 @@ class _SetupState extends State<Setup> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Sensor Grid
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Colors.greenAccent, // Background color of the grid
-                  borderRadius: BorderRadius.circular(20), // Rounded corners
+                  color: Colors.greenAccent,
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    // Calculate custom width and height for grid items
-                    final itemWidth = constraints.maxWidth / 3 - 15; // 3 columns with padding
-                    final itemHeight = 50.0; // Fixed height for sensors
+                    final itemWidth = constraints.maxWidth / 3 - 15;
+                    final itemHeight = 50.0;
 
                     return Column(
                       children: [
                         Wrap(
-                          spacing: 8.0, // Horizontal spacing
-                          runSpacing: 8.0, // Vertical spacing
+                          spacing: 8.0,
+                          runSpacing: 8.0,
                           children: List.generate(sensors.length, (index) {
                             return GestureDetector(
                               onTap: () => showTreeStageOptions(index),
@@ -181,7 +228,7 @@ class _SetupState extends State<Setup> {
                                     ),
                                     Center(
                                       child: Text(
-                                        sensors[index],
+                                        sensorButtonNames[index] ?? 'Set Stage',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
@@ -194,105 +241,31 @@ class _SetupState extends State<Setup> {
                             );
                           }),
                         ),
-                        const SizedBox(height: 16),
-                        FloatingActionButton(
-                          onPressed: addSensor,
-                          backgroundColor: Colors.white,
-                          child: const Icon(
-                            Icons.add,
-                            color: Colors.black,
-                          ),
-                        ),
                       ],
                     );
                   },
                 ),
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Time cycle for irrigation monitoring',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+              FloatingActionButton(
+                onPressed: addSensor,
+                backgroundColor: Colors.white,
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(height: 16),
-              // First time cycle
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: decrementHours,
-                    icon: const Icon(Icons.remove),
-                    color: Colors.black,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.greenAccent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '$hours hrs',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: incrementHours,
-                    icon: const Icon(Icons.add),
-                    color: Colors.black,
-                  ),
-                ],
+              TimeCycle(
+                hours: hours,
+                incrementHours: incrementHours,
+                decrementHours: decrementHours,
               ),
               const SizedBox(height: 16),
-              // Second time cycle
-              const Text(
-                'Count Execute',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: decrementHours2,
-                    icon: const Icon(Icons.remove),
-                    color: Colors.black,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.greenAccent,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      '$hours2 x',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: incrementHours2,
-                    icon: const Icon(Icons.add),
-                    color: Colors.black,
-                  ),
-                ],
+              CountExecute(
+                hours2: hours2,
+                incrementHours2: incrementHours2,
+                decrementHours2: decrementHours2,
               ),
             ],
           ),
