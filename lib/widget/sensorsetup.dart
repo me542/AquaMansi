@@ -48,39 +48,66 @@ class _SetupState extends State<Setup> {
 
   void addSensor() {
     setState(() {
-      int nextSensorNumber = sensors.isEmpty
-          ? 1
-          : int.parse(sensors.last.split(' ').last) + 1;
+      // Determine the next available sensor number
+      int nextSensorNumber = sensors.length + 1;
+      while (sensors.contains('Sensor $nextSensorNumber')) {
+        nextSensorNumber++;
+      }
 
+      // Add the new sensor
       sensors.add('Sensor $nextSensorNumber');
-      sensorButtonNames[nextSensorNumber - 1] = '${nextSensorNumber} Tree'; // Updated button name
+
+      // Ensure existing sensor stages and button names remain intact
+      final updatedStages = Map<int, String>.from(sensorStages);
+      final updatedButtonNames = Map<int, String>.from(sensorButtonNames);
+
+      for (int i = 0; i < sensors.length; i++) {
+        updatedStages[i] = sensorStages[i] ?? 'Set Stage';
+        updatedButtonNames[i] = sensorButtonNames[i] ?? '${i + 1} Tree';
+      }
+
+      sensorStages = updatedStages;
+      sensorButtonNames = updatedButtonNames;
     });
   }
 
+
+
+
+
+
   void deleteSensor(int index) {
-    String sensor = sensors[index];
-
-    if (sensorStages.containsKey(index)) {
-      if (sensorStages[index] == 'Young') {
-        widget.updateStageCount('Young', increment: false); // Decrease count for 'Young' stage
-      } else if (sensorStages[index] == 'Juvenile') {
-        widget.updateStageCount('Juvenile', increment: false); // Decrease count for 'Juvenile' stage
-      } else if (sensorStages[index] == 'Mature') {
-        widget.updateStageCount('Mature', increment: false); // Decrease count for 'Mature' stage
-      }
-    }
-
     setState(() {
+      // Update the stage count if the sensor's stage is defined
+      if (sensorStages.containsKey(index)) {
+        if (sensorStages[index] == 'Young') {
+          widget.updateStageCount('Young', increment: false);
+        } else if (sensorStages[index] == 'Juvenile') {
+          widget.updateStageCount('Juvenile', increment: false);
+        } else if (sensorStages[index] == 'Mature') {
+          widget.updateStageCount('Mature', increment: false);
+        }
+      }
+
+      // Remove the sensor and associated data
       sensors.removeAt(index);
       sensorStages.remove(index);
       sensorButtonNames.remove(index);
 
-      sensorStages = {
-        for (var i = 0; i < sensors.length; i++) i: sensorStages[i + 1] ?? ''
-      };
-      sensorButtonNames = {
-        for (var i = 0; i < sensors.length; i++) i: sensorButtonNames[i + 1] ?? ''
-      };
+      // Rebuild `sensorStages` and `sensorButtonNames` with consecutive numbering
+      final updatedStages = <int, String>{};
+      final updatedButtonNames = <int, String>{};
+      for (int i = 0; i < sensors.length; i++) {
+        updatedStages[i] = sensorStages[i + (i >= index ? 1 : 0)] ?? '';
+        updatedButtonNames[i] = sensorButtonNames[i + (i >= index ? 1 : 0)] ?? '${i + 1} Tree';
+      }
+      sensorStages = updatedStages;
+      sensorButtonNames = updatedButtonNames;
+
+      // Update sensor numbering to maintain consecutive order
+      for (int i = 0; i < sensors.length; i++) {
+        sensors[i] = 'Sensor ${i + 1}';
+      }
     });
   }
 
