@@ -257,6 +257,7 @@ class _SetupState extends State<Setup> {
                                         icon: const Icon(
                                           Icons.close,
                                           color: Colors.black,
+                                          size: 20,
                                         ),
                                         onPressed: () => deleteSensor(index),
                                       ),
