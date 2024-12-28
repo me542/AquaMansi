@@ -17,7 +17,7 @@ class TimeCycle extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          'Time cycle for irrigation monitoring',
+          'Irrigation Time Cycle',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,
