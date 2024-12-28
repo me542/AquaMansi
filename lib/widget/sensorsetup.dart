@@ -116,7 +116,15 @@ class _SetupState extends State<Setup> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Stage for ${sensors[index]}'),
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+              Text('Select the stage of tree for ${sensors[index]}',
+              textAlign: TextAlign.center, 
+            ),
+          ],
+        ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -204,7 +212,7 @@ class _SetupState extends State<Setup> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Set up Stages',
+                'Set your Trees',
                 style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -220,7 +228,7 @@ class _SetupState extends State<Setup> {
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final itemWidth = constraints.maxWidth / 3 - 15;
+                    final itemWidth = constraints.maxWidth / 3 - -10;
                     final itemHeight = 50.0;
 
                     return Column(
