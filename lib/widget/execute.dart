@@ -42,7 +42,7 @@ class CountExecute extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(
-                '$hours2 times',
+                '$hours2 Times',
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,

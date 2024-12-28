@@ -221,14 +221,14 @@ class _SetupState extends State<Setup> {
               ),
               const SizedBox(height: 16),
               Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(15.0),
                 decoration: BoxDecoration(
                   color: Colors.greenAccent,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final itemWidth = constraints.maxWidth / 3 - -10;
+                    final itemWidth = constraints.maxWidth / 3 - -15;
                     final itemHeight = 50.0;
 
                     return Column(
@@ -251,13 +251,13 @@ class _SetupState extends State<Setup> {
                                   clipBehavior: Clip.none,
                                   children: [
                                     Positioned(
-                                      top: 0,
-                                      right: -12,
+                                      top: -10,
+                                      right: -10,
                                       child: IconButton(
                                         icon: const Icon(
                                           Icons.close,
                                           color: Colors.black,
-                                          size: 20,
+                                          size: 18,
                                         ),
                                         onPressed: () => deleteSensor(index),
                                       ),
