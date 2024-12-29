@@ -255,9 +255,9 @@ class _SetupState extends State<Setup> {
                                       right: -10,
                                       child: IconButton(
                                         icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.black,
-                                          size: 18,
+                                          Icons.disabled_by_default_rounded,
+                                          color: Color.fromARGB(255, 156, 156, 156),
+                                          size: 23,
                                         ),
                                         onPressed: () => deleteSensor(index),
                                       ),
