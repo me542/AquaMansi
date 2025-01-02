@@ -119,12 +119,12 @@ class _SetupState extends State<Setup> {
           title: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+            children: [
               Text('Select the stage of tree for ${sensors[index]}',
-              textAlign: TextAlign.center, 
-            ),
-          ],
-        ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
