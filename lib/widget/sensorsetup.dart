@@ -12,173 +12,142 @@ class Setup extends StatefulWidget {
 }
 
 class _SetupState extends State<Setup> {
-  int hours = 0; // Initial time in hours for the first cycle
-  int hours2 = 0; // Initial count of execute
-  List<String> sensors = []; // Initial sensors list
-  Map<int, String> sensorStages = {}; // Map to track sensor stages (sensor index -> stage)
-  Map<int, String> sensorButtonNames = {}; // Map to track sensor button names
+  int hours = 0;
+  int hours2 = 0;
+
+  Map<int, Map<String, dynamic>> sensors = {}; // Tracks sensors with properties
 
   void incrementHours() {
     setState(() {
-      hours++; // Increase first cycle hours by 1
+      hours++;
     });
   }
 
   void decrementHours() {
     setState(() {
-      if (hours > 1) {
-        hours--; // Prevent hours from going below 1 for the first cycle
-      }
+      if (hours > 1) hours--;
     });
   }
 
   void incrementHours2() {
     setState(() {
-      hours2++; // Increase second cycle hours by 1
+      hours2++;
     });
   }
 
   void decrementHours2() {
     setState(() {
-      if (hours2 > 1) {
-        hours2--; // Prevent hours from going below 1 for the second cycle
-      }
+      if (hours2 > 1) hours2--;
     });
   }
 
   void addSensor() {
     setState(() {
-      // Determine the next available sensor number
-      int nextSensorNumber = sensors.length + 1;
-      while (sensors.contains('Sensor $nextSensorNumber')) {
-        nextSensorNumber++;
-      }
-
-      // Add the new sensor
-      sensors.add('Sensor $nextSensorNumber');
-
-      // Ensure existing sensor stages and button names remain intact
-      final updatedStages = Map<int, String>.from(sensorStages);
-      final updatedButtonNames = Map<int, String>.from(sensorButtonNames);
-
-      for (int i = 0; i < sensors.length; i++) {
-        updatedStages[i] = sensorStages[i] ?? 'Set Stage';
-        updatedButtonNames[i] = sensorButtonNames[i] ?? '${i + 1} Tree';
-      }
-
-      sensorStages = updatedStages;
-      sensorButtonNames = updatedButtonNames;
+      int newSensorPosition = sensors.length + 1;
+      sensors[newSensorPosition] = {
+        "name": "Sensor $newSensorPosition",
+        "stage": "Set Stage",
+        "enabled": true, // Sensor is enabled by default
+        "buttonName": "Sensor $newSensorPosition",
+      };
     });
   }
 
-
-
-
-
-
-  void deleteSensor(int index) {
+  void deleteLastSensor() {
     setState(() {
-      // Update the stage count if the sensor's stage is defined
-      if (sensorStages.containsKey(index)) {
-        if (sensorStages[index] == 'Young') {
-          widget.updateStageCount('Young', increment: false);
-        } else if (sensorStages[index] == 'Juvenile') {
-          widget.updateStageCount('Juvenile', increment: false);
-        } else if (sensorStages[index] == 'Mature') {
-          widget.updateStageCount('Mature', increment: false);
+      if (sensors.isNotEmpty) {
+        final lastSensorPosition = sensors.keys.last;
+        final removedSensor = sensors.remove(lastSensorPosition);
+
+        if (removedSensor != null && removedSensor['stage'] != 'Set Stage') {
+          widget.updateStageCount(removedSensor['stage'], increment: false);
         }
       }
+    });
+  }
 
-      // Remove the sensor and associated data
-      sensors.removeAt(index);
-      sensorStages.remove(index);
-      sensorButtonNames.remove(index);
+  void toggleSensorState(int sensorPosition) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final isEnabled = sensors[sensorPosition]?['enabled'] ?? false;
+        return AlertDialog(
+          title: const Text('Toggle Sensor State'),
+          content: Text('Do you want to ${isEnabled ? "disable" : "enable"} this sensor?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  sensors[sensorPosition]?['enabled'] = !isEnabled;
+                  final stage = sensors[sensorPosition]?['stage'];
 
-      // Rebuild `sensorStages` and `sensorButtonNames` with consecutive numbering
-      final updatedStages = <int, String>{};
-      final updatedButtonNames = <int, String>{};
-      for (int i = 0; i < sensors.length; i++) {
-        updatedStages[i] = sensorStages[i + (i >= index ? 1 : 0)] ?? '';
-        updatedButtonNames[i] = sensorButtonNames[i + (i >= index ? 1 : 0)] ?? '${i + 1} Tree';
-      }
-      sensorStages = updatedStages;
-      sensorButtonNames = updatedButtonNames;
+                  if (isEnabled && stage != 'Set Stage') {
+                    widget.updateStageCount(stage, increment: false);
+                  } else if (!isEnabled && stage != 'Set Stage') {
+                    widget.updateStageCount(stage);
+                  }
+                });
+                Navigator.of(context).pop();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-      // Update sensor numbering to maintain consecutive order
-      for (int i = 0; i < sensors.length; i++) {
-        sensors[i] = 'Sensor ${i + 1}';
+  void updateStage(int sensorPosition, String newStage) {
+    setState(() {
+      final oldStage = sensors[sensorPosition]?['stage'];
+      final isEnabled = sensors[sensorPosition]?['enabled'] ?? false;
+
+      if (oldStage != null && oldStage != newStage) {
+        if (isEnabled && oldStage != 'Set Stage') {
+          widget.updateStageCount(oldStage, increment: false);
+        }
+
+        sensors[sensorPosition]?['stage'] = newStage;
+        sensors[sensorPosition]?['buttonName'] = "$sensorPosition T $newStage";
+
+        if (isEnabled) {
+          widget.updateStageCount(newStage);
+        }
       }
     });
   }
 
-  void showTreeStageOptions(int index) {
+  void showTreeStageOptions(int sensorPosition) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Select the stage of tree for ${sensors[index]}',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+          title: Text('Select the stage of tree for ${sensors[sensorPosition]?["name"]}'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 title: const Text('Young'),
                 onTap: () {
-                  setState(() {
-                    if (sensorStages[index] != 'Young') {
-                      if (sensorStages[index] == 'Juvenile') {
-                        widget.updateStageCount('Juvenile', increment: false);
-                      } else if (sensorStages[index] == 'Mature') {
-                        widget.updateStageCount('Mature', increment: false);
-                      }
-                      sensorStages[index] = 'Young';
-                      widget.updateStageCount('Young');
-                      sensorButtonNames[index] = '${index + 1}T Young';
-                    }
-                  });
+                  updateStage(sensorPosition, 'Young');
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: const Text('Juvenile'),
                 onTap: () {
-                  setState(() {
-                    if (sensorStages[index] != 'Juvenile') {
-                      if (sensorStages[index] == 'Young') {
-                        widget.updateStageCount('Young', increment: false);
-                      } else if (sensorStages[index] == 'Mature') {
-                        widget.updateStageCount('Mature', increment: false);
-                      }
-                      sensorStages[index] = 'Juvenile';
-                      widget.updateStageCount('Juvenile');
-                      sensorButtonNames[index] = '${index + 1}T Juvenile';
-                    }
-                  });
+                  updateStage(sensorPosition, 'Juvenile');
                   Navigator.of(context).pop();
                 },
               ),
               ListTile(
                 title: const Text('Mature'),
                 onTap: () {
-                  setState(() {
-                    if (sensorStages[index] != 'Mature') {
-                      if (sensorStages[index] == 'Young') {
-                        widget.updateStageCount('Young', increment: false);
-                      } else if (sensorStages[index] == 'Juvenile') {
-                        widget.updateStageCount('Juvenile', increment: false);
-                      }
-                      sensorStages[index] = 'Mature';
-                      widget.updateStageCount('Mature');
-                      sensorButtonNames[index] = '${index + 1}T Mature';
-                    }
-                  });
+                  updateStage(sensorPosition, 'Mature');
                   Navigator.of(context).pop();
                 },
               ),
@@ -186,9 +155,7 @@ class _SetupState extends State<Setup> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
           ],
@@ -228,68 +195,64 @@ class _SetupState extends State<Setup> {
                 ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    final itemWidth = constraints.maxWidth / 3 - -15;
+                    final itemWidth = constraints.maxWidth / 3 - 10;
                     final itemHeight = 50.0;
 
-                    return Column(
-                      children: [
-                        Wrap(
-                          spacing: 8.0,
-                          runSpacing: 8.0,
-                          children: List.generate(sensors.length, (index) {
-                            return GestureDetector(
-                              onTap: () => showTreeStageOptions(index),
-                              child: Container(
-                                width: itemWidth,
-                                height: itemHeight,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                alignment: Alignment.center,
-                                child: Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Positioned(
-                                      top: -10,
-                                      right: -10,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.disabled_by_default_rounded,
-                                          color: Color.fromARGB(255, 156, 156, 156),
-                                          size: 23,
-                                        ),
-                                        onPressed: () => deleteSensor(index),
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        sensorButtonNames[index] ?? 'Set Stage',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                    return Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: sensors.keys.map((sensorPosition) {
+                        final isEnabled = sensors[sensorPosition]?['enabled'] ?? false;
+
+                        return GestureDetector(
+                          onLongPress: () => toggleSensorState(sensorPosition),
+                          onTap: isEnabled
+                              ? () => showTreeStageOptions(sensorPosition)
+                              : null,
+                          child: Container(
+                            width: itemWidth,
+                            height: itemHeight,
+                            decoration: BoxDecoration(
+                              color: isEnabled ? Colors.white : Colors.grey.shade400,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              sensors[sensorPosition]?["buttonName"] ?? '',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: isEnabled ? Colors.black : Colors.grey.shade700,
                               ),
-                            );
-                          }),
-                        ),
-                      ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     );
                   },
                 ),
               ),
               const SizedBox(height: 16),
-              FloatingActionButton(
-                onPressed: addSensor,
-                backgroundColor: Colors.white,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.black,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton(
+                    onPressed: addSensor,
+                    backgroundColor: Colors.white,
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  FloatingActionButton(
+                    onPressed: sensors.isNotEmpty ? deleteLastSensor : null,
+                    backgroundColor: sensors.isNotEmpty ? Colors.red : Colors.grey,
+                    child: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               TimeCycle(
