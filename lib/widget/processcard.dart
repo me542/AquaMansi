@@ -48,9 +48,9 @@ class ProgressCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$percentage% Soil Level',
+                    '$percentage% Soil Moisture',
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

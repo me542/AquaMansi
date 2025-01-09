@@ -17,7 +17,7 @@ class CountExecute extends StatelessWidget {
     return Column(
       children: [
         const Text(
-          'Number of Cycles',
+          'Number of Execution',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w500,

@@ -28,34 +28,17 @@ class Data extends StatelessWidget {
                     ],
                     rows: [
                       DataRow(
-                        cells: [
-                          DataCell(
-                            const Text('2025-01-01'),
-                            onTap: () {
-                              _showPopUp(
-                                context,
-                                'Date: 2025-01-01\nTime: 10:00 AM\nSoil Moisture: 45%',
-                              );
-                            },
-                          ),
-                          DataCell(
-                            const Text('10:00 AM'),
-                            onTap: () {
-                              _showPopUp(
-                                context,
-                                'Date: 2025-01-01\nTime: 10:00 AM\nSoil Moisture: 45%',
-                              );
-                            },
-                          ),
-                          DataCell(
-                            const Text('45%'),
-                            onTap: () {
-                              _showPopUp(
-                                context,
-                                'Date: 2025-01-01\nTime: 10:00 AM\nSoil Moisture: 45%',
-                              );
-                            },
-                          ),
+                        selected: false, // Remove selection box
+                        onSelectChanged: (_) {
+                          _showPopUp(
+                            context,
+                            'Date: 2025-01-09\nTime: 10:00 AM\nSoil Moisture: 45%',
+                          );
+                        },
+                        cells: const [
+                          DataCell(Text('2025-01-09')),
+                          DataCell(Text('10:00 AM')),
+                          DataCell(Text('45%')),
                         ],
                       ),
                     ],
@@ -120,6 +103,38 @@ class Data extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text('45%'),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Tree2'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Young'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('20%'),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Tree3'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Matured'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('68%'),
                       ),
                     ],
                   ),

@@ -8,21 +8,54 @@ class CircleLoadingIndicator extends StatefulWidget {
 class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
   double progress = 0.0; // Example percentage
   bool isProcessComplete = false; // To track process state
+  bool isFinished = false; // To track if "Finish" is displayed
 
-  void handleButtonClick() {
+  void handleButtonClick() async {
     setState(() {
-      isProcessComplete = true; // Mark process as complete
+      isProcessComplete = true; // Start the process
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Image button clicked! Process done.')),
+    await Future.delayed(Duration(seconds: 5)); // Delay for 5 seconds
+
+    // Show the popup dialog
+    bool? result = await showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('IRRIGATE TREES WITH WET SOIL?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Return true if Yes is pressed
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Return false if No is pressed
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
     );
 
-    // Revert text back to "Start" after 3 seconds
-    Future.delayed(Duration(seconds: 3), () {
-      setState(() {
-        isProcessComplete = false;
-      });
+    await Future.delayed(Duration(seconds: 5)); // Delay for another 5 seconds
+
+    setState(() {
+      isFinished = true; // Mark as finished
+      progress = 100.0; // Update progress to 100%
+    });
+
+    // Optionally, handle the result of the dialog
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(result == true ? 'Irrigation started!' : 'Irrigation canceled!')),
+    );
+
+    await Future.delayed(Duration(seconds: 3)); // Delay for 3 seconds after finish
+
+    setState(() {
+      isFinished = false;
+      isProcessComplete = false; // Reset to "Start"
+      progress = 0.0; // Reset progress
     });
   }
 
@@ -77,11 +110,11 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
         ),
         SizedBox(height: 10), // Custom space between percentage text and Start/Finish text
         Text(
-          isProcessComplete ? 'Finish' : 'Start', // Show text based on process state
+          isFinished ? 'Finish' : (isProcessComplete ? 'Processing...' : 'Start'), // Show text based on process state
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
-            color: isProcessComplete ? Colors.red : Color(0xFF27B5D9),
+            color: isFinished ? Colors.red : (isProcessComplete ? Colors.orange : Color(0xFF27B5D9)),
           ),
         ),
       ],

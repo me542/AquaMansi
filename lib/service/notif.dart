@@ -1,49 +1,37 @@
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 //
-// class NotificationHelper {
-//   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+// class NotificationService {
+//   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
+//   FlutterLocalNotificationsPlugin();
 //
-//   NotificationHelper() {
-//     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-//     _initializeNotifications();
-//   }
-//
-//   void _initializeNotifications() async {
-//     const AndroidInitializationSettings initializationSettingsAndroid =
+//   static Future<void> initialize() async {
+//     const AndroidInitializationSettings androidSettings =
 //     AndroidInitializationSettings('@mipmap/ic_launcher');
 //
-//     const InitializationSettings initializationSettings = InitializationSettings(
-//       android: initializationSettingsAndroid,
-//     );
+//     const InitializationSettings initSettings =
+//     InitializationSettings(android: androidSettings);
 //
-//     await flutterLocalNotificationsPlugin.initialize(
-//       initializationSettings,
-//       onDidReceiveNotificationResponse: (NotificationResponse response) {
-//         // Handle notification tap
-//         print("Notification clicked: ${response.payload}");
-//       },
-//     );
+//     await _notificationsPlugin.initialize(initSettings);
 //   }
 //
-//   Future<void> showNotification(String title, String body) async {
+//   static Future<void> showNotification(String title, String body) async {
 //     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-//       'aquamansi_channel',
-//       'Aquamansi Notifications',
-//       channelDescription: 'Channel for soil moisture alerts',
+//       'aqumansi_channel', // Unique channel ID
+//       'Aquamansi Notifications', // Channel name
+//       channelDescription: 'Notifications for Aquamansi app',
 //       importance: Importance.high,
 //       priority: Priority.high,
+//       sound: RawResourceAndroidNotificationSound('custom_notif_sound'), // Without .mp3 extension
 //     );
 //
-//     const NotificationDetails platformDetails = NotificationDetails(
-//       android: androidDetails,
-//     );
+//     const NotificationDetails notificationDetails =
+//     NotificationDetails(android: androidDetails);
 //
-//     await flutterLocalNotificationsPlugin.show(
+//     await _notificationsPlugin.show(
 //       0, // Notification ID
-//       title,
-//       body,
-//       platformDetails,
-//       payload: 'Aquamansi notification payload',
+//       title, // Title
+//       body, // Body
+//       notificationDetails,
 //     );
 //   }
 // }
