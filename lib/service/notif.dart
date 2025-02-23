@@ -1,37 +1,47 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/material.dart';
 
-class NotificationsService {
-  static final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+class NotificationService {
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
-  // Initialize the plugin
   static Future<void> init() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
+    const AndroidInitializationSettings androidInitSettings =
     AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+    const InitializationSettings initSettings =
+    InitializationSettings(android: androidInitSettings);
 
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await _notificationsPlugin.initialize(initSettings);
   }
 
-  // Show notification
-  static Future<void> showNotification() async {
+  static Future<void> requestPermission(BuildContext context) async {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    bool? granted = await androidImplementation?.requestNotificationsPermission();
+
+    if (granted == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Notifications permission denied! Enable manually in settings.")),
+      );
+    }
+  }
+
+  static Future<void> showNotification(String title, String body) async {
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'your_channel_id', // Channel ID
-      'your_channel_name', // Channel Name
-      channelDescription: 'Your channel description',
-      importance: Importance.high,
+      'channel_id',
+      'channel_name',
+      importance: Importance.max,
       priority: Priority.high,
     );
 
-    const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+    const NotificationDetails details = NotificationDetails(android: androidDetails);
 
-    await _flutterLocalNotificationsPlugin.show(
-      0,
-      'Notification Title',
-      'This is a test notification triggered by the button!',
-      platformDetails,
-    );
+    await _notificationsPlugin.show(0, title, body, details);
   }
 }
