@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:aquamansi_frontend/screen/data.dart'; // Your other screen
 import 'package:aquamansi_frontend/widget/appbar.dart'; // Your Custom AppBar
-import 'package:aquamansi_frontend/widget/contact.dart'; // Importing the new widget
+// import 'package:aquamansi_frontend/widget/contact.dart'; // Importing the new widget
 
 class Menu extends StatefulWidget {
   const Menu({Key? key}) : super(key: key);
@@ -41,13 +41,13 @@ class _MenuState extends State<Menu> {
   }
 
   // Function to limit the contact number to 11 digits
-  void _onContactNumberChanged(String value) {
-    if (value.length <= 11) {
-      setState(() {
-        _contactNumber = value;
-      });
-    }
-  }
+  // void _onContactNumberChanged(String value) {
+  //   if (value.length <= 11) {
+  //     setState(() {
+  //       _contactNumber = value;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -218,11 +218,11 @@ class _MenuState extends State<Menu> {
             const SizedBox(height: 20),
 
             // Contact Number Widget
-            ContactNumber(
-              contactController: _contactController,
-              initialContactNumber: _contactNumber,
-              onContactNumberChanged: _onContactNumberChanged,
-            ),
+            // ContactNumber(
+            //   contactController: _contactController,
+            //   initialContactNumber: _contactNumber,
+            //   onContactNumberChanged: _onContactNumberChanged,
+            // ),
           ],
         ),
       ),

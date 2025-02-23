@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:aquamansi_frontend/screen/usermanual.dart';
 import 'package:aquamansi_frontend/widget/logo.dart';
-import 'package:flutter/material.dart';
 
 void main() => runApp(InitialScreenApp());
 
@@ -10,7 +11,8 @@ class InitialScreenApp extends StatelessWidget {
     return MaterialApp(
       home: InitialScreen(),
       routes: {
-        '/manual': (context) => UserManual(), // Define the next route properly
+        '/manual': (context) => UserManual(), // Route for the user manual
+        '/home': (context) => HomeScreen(),  // Your home screen route
       },
     );
   }
@@ -25,10 +27,26 @@ class _InitialScreenState extends State<InitialScreen> {
   @override
   void initState() {
     super.initState();
-    // Wait for 3 seconds and navigate to the next screen
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/manual'); // Navigate to Menu()
-    });
+    _checkFirstLaunch();
+  }
+
+  // Function to check if it's the first launch
+  Future<void> _checkFirstLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
+
+    if (isFirstLaunch) {
+      // If it's the first launch, show the user manual and set the flag to false
+      prefs.setBool('isFirstLaunch', false);
+      Future.delayed(Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, '/manual'); // Navigate to user manual
+      });
+    } else {
+      // If it's not the first launch, navigate to the home screen
+      Future.delayed(Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, '/Home'); // Navigate to home screen
+      });
+    }
   }
 
   @override
@@ -40,6 +58,17 @@ class _InitialScreenState extends State<InitialScreen> {
           height: 100,
         ),
       ),
+    );
+  }
+}
+
+// Example HomeScreen widget (replace with your actual home screen)
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Home Screen')),
+      body: Center(child: Text('Welcome to the Home Screen!')),
     );
   }
 }

@@ -6,56 +6,32 @@ class CircleLoadingIndicator extends StatefulWidget {
 }
 
 class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
-  double progress = 0.0; // Example percentage
-  bool isProcessComplete = false; // To track process state
-  bool isFinished = false; // To track if "Finish" is displayed
+  double progress = 0.0;
+  bool isProcessComplete = false;
+  bool isFinished = false;
 
   void handleButtonClick() async {
     setState(() {
-      isProcessComplete = true; // Start the process
+      isProcessComplete = true;
     });
 
-    await Future.delayed(Duration(seconds: 5)); // Delay for 5 seconds
-
-    // Show the popup dialog
-    bool? result = await showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing the dialog by tapping outside
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('IRRIGATE TREES WITH WET SOIL?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true), // Return true if Yes is pressed
-              child: Text('Yes'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false), // Return false if No is pressed
-              child: Text('No'),
-            ),
-          ],
-        );
-      },
-    );
-
-    await Future.delayed(Duration(seconds: 5)); // Delay for another 5 seconds
+    await Future.delayed(Duration(seconds: 5));
 
     setState(() {
-      isFinished = true; // Mark as finished
-      progress = 100.0; // Update progress to 100%
+      isFinished = true;
+      progress = 100.0;
     });
 
-    // Optionally, handle the result of the dialog
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(result == true ? 'Irrigation started!' : 'Irrigation canceled!')),
+      SnackBar(content: Text('Irrigation started!')),
     );
 
-    await Future.delayed(Duration(seconds: 3)); // Delay for 3 seconds after finish
+    await Future.delayed(Duration(seconds: 3));
 
     setState(() {
       isFinished = false;
-      isProcessComplete = false; // Reset to "Start"
-      progress = 0.0; // Reset progress
+      isProcessComplete = false;
+      progress = 0.0;
     });
   }
 
@@ -64,7 +40,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 50), // Custom height before the first widget
+        SizedBox(height: 50),
         Stack(
           alignment: Alignment.center,
           children: [
@@ -81,40 +57,43 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
             GestureDetector(
               onTap: handleButtonClick,
               child: Container(
-                width: 180, // Custom width for the circle
-                height: 180, // Custom height for the circle
+                width: 180,
+                height: 180,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle, // Makes the container circular
-                  border: Border.all(color: Colors.transparent, width: 4), // Optional border
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.transparent, width: 4),
                 ),
                 child: ClipOval(
                   child: Image.asset(
-                    'asset/icon3.png', // Replace with your image path
-                    fit: BoxFit.cover, // Ensures the image fills the circle
-                    width: 200, // Width of the image
-                    height: 200, // Height of the image
+                    'asset/icon3.png',
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
                   ),
                 ),
               ),
             ),
           ],
         ),
-        SizedBox(height: 30), // Custom space between progress indicator and percentage text
+        SizedBox(height: 30),
         Text(
-          '${progress.toInt()}%', // Display the progress percentage
+          '${progress.toInt()}%',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF27B5D9), // Custom color for the text
+            color: Color(0xFF27B5D9),
           ),
         ),
-        SizedBox(height: 10), // Custom space between percentage text and Start/Finish text
-        Text(
-          isFinished ? 'Finish' : (isProcessComplete ? 'Processing...' : 'Start'), // Show text based on process state
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            color: isFinished ? Colors.red : (isProcessComplete ? Colors.orange : Color(0xFF27B5D9)),
+        SizedBox(height: 10),
+        GestureDetector(
+          onTap: handleButtonClick,
+          child: Text(
+            isFinished ? 'Finish' : (isProcessComplete ? 'Processing...' : 'Start'),
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+              color: isFinished ? Colors.red : (isProcessComplete ? Colors.orange : Color(0xFF27B5D9)),
+            ),
           ),
         ),
       ],
