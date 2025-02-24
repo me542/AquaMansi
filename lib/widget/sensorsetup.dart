@@ -108,7 +108,7 @@ class _SetupState extends State<Setup> {
             ),
             const SizedBox(height: 16),
 
-            // ✅ BUTTON TO TRIGGER NOTIFICATION
+            //✅ BUTTON TO TRIGGER NOTIFICATION
             FloatingActionButton(
               onPressed: triggerOfflineNotification,
               backgroundColor: Colors.white,
