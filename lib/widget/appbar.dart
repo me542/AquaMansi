@@ -19,7 +19,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Color(0xFF4CECAE), // Status bar color
+        statusBarColor: Color(0xCA8DF4C2), // Status bar color
         statusBarIconBrightness: Brightness.dark, // Dark icons
         statusBarBrightness: Brightness.light, // For iOS
       ),
@@ -30,7 +30,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             bottomRight: Radius.circular(20), // Rounded corner for the bottom right
           ),
           child: AppBar(
-            backgroundColor: const Color(0xFF4CECAE),
+            backgroundColor: const Color(0xCA8DF4C2),
             leading: showBackArrow
                 ? IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.white),

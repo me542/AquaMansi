@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart'; // For permission handling
 
 class CircleLoadingIndicator extends StatefulWidget {
   @override
@@ -10,20 +12,108 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
   bool isProcessComplete = false;
   bool isFinished = false;
 
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeNotifications();
+  }
+
+  // Initialize notifications
+  void _initializeNotifications() async {
+    // Request notification permission if targeting Android 13+
+    if (await Permission.notification.isGranted == false) {
+      await Permission.notification.request();
+    }
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  // Show notification for the start of the irrigation process
+  Future<void> _showStartNotification() async {
+    try {
+      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        'watering_channel_id',
+        'Watering Channel',
+        channelDescription: 'Notification channel for watering process (start)', // Updated description
+        importance: Importance.high,
+        priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound('star'), // Custom start sound
+      );
+
+      const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+
+      await _flutterLocalNotificationsPlugin.show(
+        0,
+        'Watering Started',
+        'The watering process has started. Please wait...',
+        platformDetails,
+      );
+    } catch (e) {
+      print('Error showing start notification: $e');
+    }
+  }
+
+  Future<void> _showDoneNotification() async {
+    try {
+      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+        'watering_channel_id',  // Channel ID
+        'Watering Channel',     // Channel Name
+        channelDescription: 'Notification channel for completed watering process', // Updated description
+        importance: Importance.high,
+        priority: Priority.high,
+        sound: RawResourceAndroidNotificationSound('done'), // Custom sound for 'done'
+      );
+
+      const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+
+      // Display the notification
+      await _flutterLocalNotificationsPlugin.show(
+        1,  // Notification ID
+        'Watering Done', // Title
+        'The watering process is complete!', // Message
+        platformDetails, // Platform-specific notification details
+      );
+    } catch (e) {
+      print('Error showing done notification: $e');
+    }
+  }
+
+
+  // Handle button click to start and finish the process
   void handleButtonClick() async {
+    if (isProcessComplete || isFinished) return; // Prevent clicking while process is already complete
+
     setState(() {
       isProcessComplete = true;
     });
 
-    await Future.delayed(Duration(seconds: 5));
+    await _showStartNotification();
+
+    // Simulate watering process with progress updates
+    for (int i = 0; i <= 100; i++) {
+      await Future.delayed(Duration(milliseconds: 50));
+      setState(() {
+        progress = i.toDouble();
+      });
+    }
 
     setState(() {
       isFinished = true;
-      progress = 100.0;
     });
 
+    // Show the "done" notification after the process completes
+    await _showDoneNotification();
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Irrigation started!')),
+      SnackBar(content: Text('Irrigation process is complete!')),
     );
 
     await Future.delayed(Duration(seconds: 3));
@@ -51,7 +141,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
                 value: progress / 100,
                 strokeWidth: 8,
                 backgroundColor: Colors.grey[300],
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CECAE)),
+                valueColor: AlwaysStoppedAnimation<Color>(isFinished ? Colors.green : Color(0xFF4CECAE)), // Green when done
               ),
             ),
             GestureDetector(
@@ -65,7 +155,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
                 ),
                 child: ClipOval(
                   child: Image.asset(
-                    'asset/icon3.png',
+                    'asset/icon3.png', // Change this to your desired icon
                     fit: BoxFit.cover,
                     width: 200,
                     height: 200,
@@ -75,7 +165,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
             ),
           ],
         ),
-        SizedBox(height: 30),
+        SizedBox(height: 10),
         Text(
           '${progress.toInt()}%',
           style: TextStyle(
@@ -92,10 +182,13 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              color: isFinished ? Colors.red : (isProcessComplete ? Colors.orange : Color(0xFF27B5D9)),
+              color: isFinished
+                  ? Colors.green
+                  : (isProcessComplete ? Color(0xFF27B5D9) : Color(0xFF27B5D9)),
             ),
           ),
         ),
+        SizedBox(height: 20),
       ],
     );
   }

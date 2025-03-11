@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus_windows
+  flutter_tts
   permission_handler_windows
 )
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:aquamansi_frontend/screen/usermanual.dart';
-import 'package:aquamansi_frontend/widget/logo.dart';
+import 'package:Aquamansi/screen/usermanual.dart';
+import 'package:Aquamansi/widget/logo.dart';
 
 void main() => runApp(InitialScreenApp());
 

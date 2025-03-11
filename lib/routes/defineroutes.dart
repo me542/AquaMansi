@@ -1,5 +1,5 @@
-  import 'package:aquamansi_frontend/screen/initialscreen.dart';
-  import 'package:aquamansi_frontend/screen/menuoption.dart';
+  import 'package:Aquamansi/screen/initialscreen.dart';
+  import 'package:Aquamansi/screen/menuoption.dart';
   import 'package:flutter/material.dart';
   import '../screen/homescreen.dart';
   import '../screen/usermanual.dart';

@@ -20,7 +20,7 @@ class ProgressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF4CECAE),
+        color: const Color(0xCA8DF4C2),
         borderRadius: BorderRadius.circular(16), // Rounded corners
         boxShadow: [
           BoxShadow(
@@ -51,7 +51,7 @@ class ProgressCard extends StatelessWidget {
                     '$percentage% Soil Moisture',
                     style: const TextStyle(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: Color(0xFF188097),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -73,7 +73,7 @@ class ProgressCard extends StatelessWidget {
                   '$count',
                   style: const TextStyle(
                     fontSize: 30,
-                    color: Colors.white,
+                    color: Color(0xFF188097),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -81,7 +81,7 @@ class ProgressCard extends StatelessWidget {
                   stage,
                   style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.white,
+                    color: Color(0xFF188097),
                   ),
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:aquamansi_frontend/screen/data.dart'; // Your other screen
-import 'package:aquamansi_frontend/widget/appbar.dart'; // Your Custom AppBar
+import 'package:Aquamansi/screen/data.dart'; // Your other screen
+import 'package:Aquamansi/widget/appbar.dart'; // Your Custom AppBar
 // import 'package:aquamansi_frontend/widget/contact.dart'; // Importing the new widget
 
 class Menu extends StatefulWidget {
@@ -73,7 +73,7 @@ class _MenuState extends State<Menu> {
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFF4CECAE),
+                  backgroundColor: const Color(0xCA8DF4C2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -138,7 +138,7 @@ class _MenuState extends State<Menu> {
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFF4CECAE),
+                  backgroundColor: const Color(0xCA8DF4C2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -205,7 +205,7 @@ class _MenuState extends State<Menu> {
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
-                  backgroundColor: const Color(0xFF4CECAE),
+                  backgroundColor: const Color(0xCA8DF4C2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
