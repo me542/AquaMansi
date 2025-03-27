@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:Aquamansi/service/notif.dart'; // Import the NotificationsService class
+import 'package:Aquamansi/hive/websocket.dart'; // Import WebSocketService
 
 class CircleLoadingIndicator extends StatefulWidget {
   @override
@@ -10,11 +11,13 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
   double progress = 0.0;
   bool isProcessComplete = false;
   bool isFinished = false;
+  final WebSocketService _webSocketService = WebSocketService(); // Create WebSocket instance
 
   @override
   void initState() {
     super.initState();
     NotificationsService.init(); // Initialize notifications
+    _webSocketService.connect(); // Connect WebSocket
   }
 
   void handleButtonClick() async {
@@ -24,6 +27,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
       isProcessComplete = true;
     });
 
+    _webSocketService.sendMessage("R"); // Send 'R' to ESP via WebSocket
     await NotificationsService.showStartNotification();
 
     // Simulate watering process, but stop at 90%
@@ -59,6 +63,12 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
       isFinished = false;
       progress = 0.0;
     });
+  }
+
+  @override
+  void dispose() {
+    _webSocketService.disconnect(); // Disconnect WebSocket when widget is removed
+    super.dispose();
   }
 
   @override
