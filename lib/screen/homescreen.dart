@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:Aquamansi/hive/hive.dart'; // Import HiveService
 import '../widget/appbar.dart';
 import '../widget/indicator.dart';
 import '../widget/processcard.dart';
@@ -18,7 +19,27 @@ class _HomescreenState extends State<Homescreen> {
     'Mature': 0,
   };
 
-  void updateStageCount(String stage, {bool increment = true}) {
+  @override
+  void initState() {
+    super.initState();
+    _loadStageCounts();
+  }
+
+  /// Load stage counts from Hive when the app starts
+  Future<void> _loadStageCounts() async {
+    await HiveService.init(); // Ensure Hive is initialized
+    setState(() {
+      sensorCounts = {
+        'Young': HiveService.getStageCount('Young'),
+        'Juvenile': HiveService.getStageCount('Juvenile'),
+        'Mature': HiveService.getStageCount('Mature'),
+      };
+    });
+    print('Loaded stage counts: $sensorCounts');
+  }
+
+  /// Update stage count and save it to Hive
+  void updateStageCount(String stage, {bool increment = true}) async {
     setState(() {
       if (increment) {
         sensorCounts[stage] = sensorCounts[stage]! + 1;
@@ -28,6 +49,9 @@ class _HomescreenState extends State<Homescreen> {
         }
       }
     });
+
+    await HiveService.updateStageCount(stage, increment: increment);
+    print('Updated stage "$stage" count: ${sensorCounts[stage]}');
   }
 
   @override

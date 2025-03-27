@@ -25,16 +25,17 @@ class NotificationsService {
     }
   }
 
-  // Show notification when watering starts with a custom start sound (ID 0)
+  // Show notification when watering starts
   static Future<void> showStartNotification() async {
     try {
       const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-        'watering_channel_id',
-        'Watering Channel',
-        channelDescription: 'This is the notification for the start of the watering process.',
+        'watering_start_channel_v2', // Changed channel ID to force recreation
+        'Watering Start Notifications',
+        channelDescription: 'This notification alerts when watering starts.',
         importance: Importance.high,
         priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound('star'), // Custom start sound (ID 0)
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('start'), // Custom start sound
       );
 
       const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
@@ -50,23 +51,23 @@ class NotificationsService {
     }
   }
 
-  // Show notification when watering is done with a custom done sound (ID 1)
+  // Show notification when watering is done
   static Future<void> showDoneNotification() async {
     try {
-      // Cancel any ongoing "start" or "last execution" notifications
-      await _flutterLocalNotificationsPlugin.cancel(0); // Cancel the "start" notification if still present
-      await _flutterLocalNotificationsPlugin.cancel(2); // Cancel the "last execution" notification if still present
+      // Cancel any ongoing "start" notifications
+      await _flutterLocalNotificationsPlugin.cancel(0);
 
-      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-        'watering_channel_id',
-        'Watering Channel',
-        channelDescription: 'This is the notification for the completion of the watering process.',
+      const AndroidNotificationDetails androidDoneDetails = AndroidNotificationDetails(
+        'watering_done_channel_v2', // Changed channel ID to force recreation
+        'Watering Done Notifications',
+        channelDescription: 'This notification alerts when watering is completed.',
         importance: Importance.high,
         priority: Priority.high,
-        sound: RawResourceAndroidNotificationSound('done'), // Custom done sound (ID 1)
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('finished'), // Custom finished sound
       );
 
-      const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
+      const NotificationDetails platformDetails = NotificationDetails(android: androidDoneDetails);
 
       // Show the "done" notification (ID 1)
       await _flutterLocalNotificationsPlugin.show(
@@ -77,41 +78,6 @@ class NotificationsService {
       );
     } catch (e) {
       print('Error showing done notification: $e');
-    }
-  }
-
-  // Show the last execution notification (persistent until interacted with)
-  static Future<void> showLastExecutionNotification() async {
-    try {
-      const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-        'watering_channel_id',
-        'Watering Channel',
-        channelDescription: 'This notification remains until interacted with.',
-        importance: Importance.high,
-        priority: Priority.high,
-        ongoing: true, // Makes the notification persistent
-        sound: RawResourceAndroidNotificationSound('last'), // Custom last execution sound (ID 2)
-      );
-
-      const NotificationDetails platformDetails = NotificationDetails(android: androidDetails);
-
-      await _flutterLocalNotificationsPlugin.show(
-        2, // ID 2 for the last execution notification
-        'Last Execution Active',
-        'This is the last irrigation task. Tap to close it.',
-        platformDetails,
-      );
-    } catch (e) {
-      print('Error showing last execution notification: $e');
-    }
-  }
-
-  // Dismiss the last execution notification
-  static Future<void> dismissLastExecutionNotification() async {
-    try {
-      await _flutterLocalNotificationsPlugin.cancel(2); // Cancel the last execution notification (ID 2)
-    } catch (e) {
-      print('Error dismissing last execution notification: $e');
     }
   }
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:provider/provider.dart';
-import '../hive/websocket.dart';
 
 class TimeCycle extends StatefulWidget {
   const TimeCycle({super.key});
@@ -13,15 +11,11 @@ class TimeCycle extends StatefulWidget {
 class _TimeCycleState extends State<TimeCycle> {
   late Box<int> settingsBox;
   int minutes = 0;
-  late WebSocketService webSocketService;
 
   @override
   void initState() {
     super.initState();
     _initHive();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _listenToWebSocket();
-    });
   }
 
   Future<void> _initHive() async {
@@ -29,21 +23,6 @@ class _TimeCycleState extends State<TimeCycle> {
     if (mounted) {
       setState(() {
         minutes = settingsBox.get('irrigation_time', defaultValue: 0)!;
-      });
-    }
-  }
-
-  void _listenToWebSocket() {
-    webSocketService = Provider.of<WebSocketService>(context, listen: false);
-    webSocketService.addListener(_updateFromWebSocket);
-  }
-
-  void _updateFromWebSocket() {
-    final newMinutes = webSocketService.irrigationInterval;
-    if (newMinutes != null && newMinutes != minutes) {
-      setState(() {
-        minutes = newMinutes;
-        settingsBox.put('irrigation_time', minutes);
       });
     }
   }
@@ -60,8 +39,6 @@ class _TimeCycleState extends State<TimeCycle> {
         minutes = newMinutes;
         settingsBox.put('irrigation_time', minutes);
       });
-
-      webSocketService.sendMessage('SET_INTERVAL:$newMinutes');
     }
   }
 
@@ -102,11 +79,5 @@ class _TimeCycleState extends State<TimeCycle> {
         ),
       ],
     );
-  }
-
-  @override
-  void dispose() {
-    webSocketService.removeListener(_updateFromWebSocket);
-    super.dispose();
   }
 }
