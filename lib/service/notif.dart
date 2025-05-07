@@ -42,8 +42,8 @@ class NotificationsService {
 
       await _flutterLocalNotificationsPlugin.show(
         0, // ID 0 for the start notification
-        'Watering Started',
-        'The watering process has started. Please wait...',
+        'Aquamansi Activated',
+        'Collecting Soil Moisture Data',
         platformDetails,
       );
     } catch (e) {
@@ -64,7 +64,7 @@ class NotificationsService {
         importance: Importance.high,
         priority: Priority.high,
         playSound: true,
-        sound: RawResourceAndroidNotificationSound('finished'), // Custom finished sound
+        sound: RawResourceAndroidNotificationSound('deactive.mp3'), // Custom finished sound
       );
 
       const NotificationDetails platformDetails = NotificationDetails(android: androidDoneDetails);
@@ -72,8 +72,8 @@ class NotificationsService {
       // Show the "done" notification (ID 1)
       await _flutterLocalNotificationsPlugin.show(
         1, // ID 1 for the done notification
-        'Watering Done',
-        'The watering process is complete!',
+        'Aquamansi Deactivated',
+        'Watering Cycle Ended.',
         platformDetails,
       );
     } catch (e) {

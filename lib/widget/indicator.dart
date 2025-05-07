@@ -1,75 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:Aquamansi/service/notif.dart'; // Import the NotificationsService class
-import 'package:Aquamansi/hive/websocket.dart'; // Import WebSocketService
+import 'package:Aquamansi/service/notif.dart';
+import 'package:Aquamansi/hive/websocket.dart';
+
 
 class CircleLoadingIndicator extends StatefulWidget {
   @override
   _CircleLoadingIndicatorState createState() => _CircleLoadingIndicatorState();
 }
 
-class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
-  double progress = 0.0;
-  bool isProcessComplete = false;
-  bool isFinished = false;
-  final WebSocketService _webSocketService = WebSocketService(); // Create WebSocket instance
+
+class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator>
+    with SingleTickerProviderStateMixin {
+  bool isActivated = false;
+  final WebSocketService _webSocketService = WebSocketService();
+  AnimationController? _controller;
+
 
   @override
   void initState() {
     super.initState();
-    NotificationsService.init(); // Initialize notifications
-    _webSocketService.connect(); // Connect WebSocket
+    NotificationsService.init();
+    _webSocketService.connect();
+    _webSocketService.onMessage(_onWebSocketMessage);
+
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..addListener(() {
+      setState(() {}); // Rebuild to update rotation
+    });
+    _controller?.repeat();
+    _controller?.stop(); // Don't rotate by default
   }
+
+
+  void _onWebSocketMessage(String message) {
+    // Handle incoming messages if needed
+  }
+
 
   void handleButtonClick() async {
-    if (isProcessComplete || isFinished) return; // Prevent multiple clicks
-
     setState(() {
-      isProcessComplete = true;
+      isActivated = !isActivated;
     });
 
-    _webSocketService.sendMessage("R"); // Send 'R' to ESP via WebSocket
-    await NotificationsService.showStartNotification();
 
-    // Simulate watering process, but stop at 90%
-    for (int i = 0; i <= 90; i++) {
-      await Future.delayed(Duration(milliseconds: 50));
-      setState(() {
-        progress = i.toDouble();
-      });
+    if (isActivated) {
+      _controller?.repeat(); // Start spinning
+      _webSocketService.sendMessage("R");
+      await NotificationsService.showStartNotification();
+    } else {
+      _controller?.stop(); // Stop spinning
+      _webSocketService.sendMessage("S"); // Optional: send stop signal
+      await NotificationsService.showDoneNotification();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Irrigation process is deactivated.')),
+      );
     }
-
-    // Continue from 90% to 100%
-    for (int i = 91; i <= 100; i++) {
-      await Future.delayed(Duration(milliseconds: 50));
-      setState(() {
-        progress = i.toDouble();
-      });
-    }
-
-    setState(() {
-      isFinished = true;
-      isProcessComplete = false;
-    });
-
-    await NotificationsService.showDoneNotification();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Irrigation process is complete!')),
-    );
-
-    await Future.delayed(Duration(seconds: 3));
-
-    setState(() {
-      isFinished = false;
-      progress = 0.0;
-    });
   }
+
 
   @override
   void dispose() {
-    _webSocketService.disconnect(); // Disconnect WebSocket when widget is removed
+    _webSocketService.disconnect();
+    _controller?.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -85,12 +83,13 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
               SizedBox(
                 width: 200,
                 height: 200,
-                child: CircularProgressIndicator(
-                  value: progress / 100,
-                  strokeWidth: 8,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isFinished ? Colors.green : Color(0xFF4CECAE),
+                child: Transform.rotate(
+                  angle: isActivated ? _controller!.value * 6.3 : 0,
+                  child: CircularProgressIndicator(
+                    value: isActivated ? null : 0,
+                    strokeWidth: 8,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CECAE)),
                   ),
                 ),
               ),
@@ -115,7 +114,7 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
         ),
         SizedBox(height: 10),
         Text(
-          '${progress.toInt()}%',
+          isActivated ? 'Running' : 'Ready',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -126,11 +125,11 @@ class _CircleLoadingIndicatorState extends State<CircleLoadingIndicator> {
         GestureDetector(
           onTap: handleButtonClick,
           child: Text(
-            isFinished ? 'Finish' : (isProcessComplete ? 'Processing...' : 'Start'),
+            isActivated ? 'Deactivate' : 'Activate',
             style: TextStyle(
               fontSize: 25,
               fontWeight: FontWeight.bold,
-              color: isFinished ? Colors.green : Color(0xFF27B5D9),
+              color: isActivated ? Colors.red : Color(0xFF27B5D9),
             ),
           ),
         ),

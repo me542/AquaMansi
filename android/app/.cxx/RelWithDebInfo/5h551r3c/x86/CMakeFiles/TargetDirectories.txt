@@ -1,0 +1,2 @@
+C:/Users/reyvin/StudioProjects/AquaMansi/android/app/.cxx/RelWithDebInfo/5h551r3c/x86/CMakeFiles/edit_cache.dir
+C:/Users/reyvin/StudioProjects/AquaMansi/android/app/.cxx/RelWithDebInfo/5h551r3c/x86/CMakeFiles/rebuild_cache.dir

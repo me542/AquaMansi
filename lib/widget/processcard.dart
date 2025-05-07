@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ProgressCard extends StatelessWidget {
-  final int percentage; // Percentage of completion
-  final String stage; // Growth stage (e.g., Young, Juvenile, Matured)
+  final String stage; // Tree growth stage label (e.g., "Young Trees")
   final int count; // Number of trees in this stage
-  final Color color; // Color for the progress bar
-  final String imagePath; // Path to the image for this stage
+  final Color color; // Background color for avatar (if needed)
+  final String imagePath; // Image path for the stage
 
   const ProgressCard({
     Key? key,
-    required this.percentage,
     required this.stage,
     required this.count,
     required this.color,
@@ -21,12 +19,12 @@ class ProgressCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xCA8DF4C2),
-        borderRadius: BorderRadius.circular(16), // Rounded corners
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
             blurRadius: 8,
-            offset: const Offset(0, 4), // Shadow effect
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -35,53 +33,40 @@ class ProgressCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Display image instead of an icon
+            // Stage image
             CircleAvatar(
               radius: 30,
               backgroundColor: Colors.grey[200],
-              backgroundImage: AssetImage(imagePath), // Image for the stage
+              backgroundImage: AssetImage(imagePath),
             ),
             const SizedBox(width: 16),
-            // Text and progress indicator section
+            // Stage name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$percentage% Soil Moisture',
+                    stage,
                     style: const TextStyle(
                       fontSize: 20,
                       color: Color(0xFF188097),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  LinearProgressIndicator(
-                    value: percentage / 100,
-                    color: color,
-                    backgroundColor: Colors.white,
-                  ),
                 ],
               ),
             ),
             const SizedBox(width: 16),
-            // Count and stage text
+            // Tree count (unchanged)
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   '$count',
                   style: const TextStyle(
-                    fontSize: 30,
+                    fontSize: 35,
                     color: Color(0xFF188097),
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  stage,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Color(0xFF188097),
                   ),
                 ),
               ],

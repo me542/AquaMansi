@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:Aquamansi/hive/websocket.dart'; // Make sure to import your WebSocket service
 
 class TimeCycle extends StatefulWidget {
   const TimeCycle({super.key});
@@ -11,11 +12,23 @@ class TimeCycle extends StatefulWidget {
 class _TimeCycleState extends State<TimeCycle> {
   late Box<int> settingsBox;
   int minutes = 0;
+  final WebSocketService _webSocketService = WebSocketService();
 
   @override
   void initState() {
     super.initState();
     _initHive();
+    _webSocketService.connect();
+
+    _webSocketService.onMessage((message) {
+      if (message.startsWith('{"irrigation_time"')) {
+        final int receivedMinutes = int.tryParse(message.split(':')[1].split(',')[0]) ?? 0;
+        setState(() {
+          minutes = receivedMinutes;
+          settingsBox.put('irrigation_time', minutes);
+        });
+      }
+    });
   }
 
   Future<void> _initHive() async {
@@ -38,6 +51,7 @@ class _TimeCycleState extends State<TimeCycle> {
       setState(() {
         minutes = newMinutes;
         settingsBox.put('irrigation_time', minutes);
+        _webSocketService.sendMessage('SET_IRRIGATION_TIME:${formattedTime}');
       });
     }
   }
@@ -79,5 +93,11 @@ class _TimeCycleState extends State<TimeCycle> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _webSocketService.disconnect();
+    super.dispose();
   }
 }

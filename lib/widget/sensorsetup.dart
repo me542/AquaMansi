@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:Aquamansi/widget/timecycle.dart';
-import 'package:Aquamansi/widget/execute.dart';
+// import 'package:Aquamansi/widget/timecycle.dart';
+// import 'package:Aquamansi/widget/execute.dart';
 import 'package:Aquamansi/screen/sensor_model.dart';
 import 'package:Aquamansi/hive/hive.dart'; // Import HiveService
+import 'package:Aquamansi/hive/websocket.dart'; // Import WebSocketService
 
 class Setup extends StatefulWidget {
   final Function(String, {bool increment}) updateStageCount;
@@ -16,18 +17,19 @@ class Setup extends StatefulWidget {
 class _SetupState extends State<Setup> {
   int hours = 0;
   int hours2 = 0;
-
-  List<SensorModel> sensors = []; // Now using a list instead of a Map
+  List<SensorModel> sensors = [];
+  final WebSocketService _webSocketService = WebSocketService(); // FIX: Instance created
 
   @override
   void initState() {
     super.initState();
+    _webSocketService.connect(); // Connect WebSocket on init
     _loadSensors();
   }
 
   Future<void> _loadSensors() async {
     sensors = HiveService.getAllSensors();
-    setState(() {}); // Refresh UI with loaded sensors
+    setState(() {});
   }
 
   void addSensor() async {
@@ -45,6 +47,9 @@ class _SetupState extends State<Setup> {
     setState(() {
       sensors.add(newSensor);
     });
+
+    // Send update to ESP8266
+    _webSocketService.sendMessage('{"action": "ADD_SENSOR", "sensorId": $newId}');
   }
 
   void deleteLastSensor() async {
@@ -57,6 +62,9 @@ class _SetupState extends State<Setup> {
       }
 
       setState(() {});
+
+      // Notify ESP8266
+      _webSocketService.sendMessage('{"action": "DELETE_SENSOR", "sensorId": ${lastSensor.id}}');
     }
   }
 
@@ -84,6 +92,9 @@ class _SetupState extends State<Setup> {
                 if (sensor.stage != 'Set Stage') {
                   widget.updateStageCount(sensor.stage, increment: sensor.enabled);
                 }
+
+                // Notify ESP8266
+                _webSocketService.sendMessage('{"action": "TOGGLE_SENSOR", "sensorId": ${sensor.id}, "enabled": ${sensor.enabled}}');
 
                 Navigator.of(context).pop();
               },
@@ -113,6 +124,9 @@ class _SetupState extends State<Setup> {
       if (sensor.enabled) {
         widget.updateStageCount(newStage);
       }
+
+      // Notify ESP8266
+      _webSocketService.sendMessage('{"action": "UPDATE_STAGE", "sensorId": ${sensor.id}, "newStage": "$newStage"}');
     }
   }
 
@@ -240,10 +254,10 @@ class _SetupState extends State<Setup> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              TimeCycle(),
-              const SizedBox(height: 16),
-              CountExecute(),
+              // const SizedBox(height: 16),
+              // TimeCycle(),
+              // const SizedBox(height: 16),
+              // CountExecute(),
             ],
           ),
         ),

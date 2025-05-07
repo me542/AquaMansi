@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
 import '../hive/hive.dart';
+import 'package:Aquamansi/hive/websocket.dart'; // Make sure to import your WebSocket service
 
 class CountExecute extends StatefulWidget {
   const CountExecute({super.key});
@@ -13,17 +12,16 @@ class CountExecute extends StatefulWidget {
 
 class _CountExecuteState extends State<CountExecute> {
   late Box<int> _hoursBox;
-  late IOWebSocketChannel channel;
-  final String espUrl = 'ws://your_esp_ip:81';
   bool _isBoxInitialized = false;
+  final WebSocketService _webSocketService = WebSocketService();
 
   @override
   void initState() {
     super.initState();
     _initHive();
+    _webSocketService.connect();
 
-    channel = IOWebSocketChannel.connect(espUrl);
-    channel.stream.listen((message) {
+    _webSocketService.onMessage((message) {
       if (message.startsWith('{"execution_count"')) {
         final int receivedCount = int.tryParse(message.split(':')[1].split(',')[0]) ?? 0;
         if (_isBoxInitialized) {
@@ -53,7 +51,7 @@ class _CountExecuteState extends State<CountExecute> {
       setState(() {
         _hoursBox.put('hours2', newCount);
       });
-      channel.sink.add('SET_EXECUTION_COUNT:$newCount');
+      _webSocketService.sendMessage('SET_EXECUTION_COUNT:$newCount');
     }
   }
 
@@ -105,7 +103,7 @@ class _CountExecuteState extends State<CountExecute> {
 
   @override
   void dispose() {
-    channel.sink.close(status.goingAway);
+    _webSocketService.disconnect();
     super.dispose();
   }
 }
